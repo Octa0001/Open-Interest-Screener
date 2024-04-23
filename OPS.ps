@@ -1,0 +1,91 @@
+// @author Octa
+//Join My Community: https://discord.gg/KCEPAHxJWP
+//@version=5
+indicator("Open Interest Screener", "OIS", overlay = true)
+
+bool overwriteSymbolInput = bool(false)
+string tickerInput = ("")
+
+symbol1 = input("BINANCE:BTCUSDT.P", "Symbol 1")
+symbol2 = input("BINANCE:ETHUSDT.P", "Symbol 2")
+symbol3 = input("BINANCE:SOLUSDT.P", "Symbol 3")
+symbol4 = input("BINANCE:XRPUSDT.P", "Symbol 4")
+symbol5 = input("BINANCE:ADAUSDT.P", "Symbol 5")
+symbol6 = input("BINANCE:FTMUSDT.P", "Symbol 6")
+symbol7 = input("BINANCE:OPUSDT.P", "Symbol 7")
+symbol8 = input("BINANCE:GRTUSDT.P", "Symbol 8")
+
+string symbol1_userSymbol = overwriteSymbolInput ? tickerInput : symbol1
+string symbol2_userSymbol = overwriteSymbolInput ? tickerInput : symbol2
+string symbol3_userSymbol = overwriteSymbolInput ? tickerInput : symbol3
+string symbol4_userSymbol = overwriteSymbolInput ? tickerInput : symbol4
+string symbol5_userSymbol = overwriteSymbolInput ? tickerInput : symbol5
+string symbol6_userSymbol = overwriteSymbolInput ? tickerInput : symbol6
+string symbol7_userSymbol = overwriteSymbolInput ? tickerInput : symbol7
+string symbol8_userSymbol = overwriteSymbolInput ? tickerInput : symbol8
+
+string symbol1_openInterestTicker = str.format("{0}_OI", symbol1_userSymbol)
+string symbol2_openInterestTicker = str.format("{0}_OI", symbol2_userSymbol)
+string symbol3_openInterestTicker = str.format("{0}_OI", symbol3_userSymbol)
+string symbol4_openInterestTicker = str.format("{0}_OI", symbol4_userSymbol)
+string symbol5_openInterestTicker = str.format("{0}_OI", symbol5_userSymbol)
+string symbol6_openInterestTicker = str.format("{0}_OI", symbol6_userSymbol)
+string symbol7_openInterestTicker = str.format("{0}_OI", symbol7_userSymbol)
+string symbol8_openInterestTicker = str.format("{0}_OI", symbol8_userSymbol)
+
+string timeframe = syminfo.type == "futures" and timeframe.isintraday ? "1D" : timeframe.period
+
+[symbol1_oiOpen, symbol1_oiHigh, symbol1_oiLow, symbol1_oiClose, symbol1_oiColorCond] = request.security(symbol1_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol2_oiOpen, symbol2_oiHigh, symbol2_oiLow, symbol2_oiClose, symbol2_oiColorCond] = request.security(symbol2_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol3_oiOpen, symbol3_oiHigh, symbol3_oiLow, symbol3_oiClose, symbol3_oiColorCond] = request.security(symbol3_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol4_oiOpen, symbol4_oiHigh, symbol4_oiLow, symbol4_oiClose, symbol4_oiColorCond] = request.security(symbol4_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol5_oiOpen, symbol5_oiHigh, symbol5_oiLow, symbol5_oiClose, symbol5_oiColorCond] = request.security(symbol5_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol6_oiOpen, symbol6_oiHigh, symbol6_oiLow, symbol6_oiClose, symbol6_oiColorCond] = request.security(symbol6_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol7_oiOpen, symbol7_oiHigh, symbol7_oiLow, symbol7_oiClose, symbol7_oiColorCond] = request.security(symbol7_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+[symbol8_oiOpen, symbol8_oiHigh, symbol8_oiLow, symbol8_oiClose, symbol8_oiColorCond] = request.security(symbol8_openInterestTicker, timeframe, [open, high, low, close, close > close[1]], ignore_invalid_symbol = true)
+
+symbol1_sma10 = ta.sma(symbol1_oiClose, 10)
+symbol2_sma10 = ta.sma(symbol2_oiClose, 10)
+symbol3_sma10 = ta.sma(symbol3_oiClose, 10)
+symbol4_sma10 = ta.sma(symbol4_oiClose, 10)
+symbol5_sma10 = ta.sma(symbol5_oiClose, 10)
+symbol6_sma10 = ta.sma(symbol6_oiClose, 10)
+symbol7_sma10 = ta.sma(symbol7_oiClose, 10)
+symbol8_sma10 = ta.sma(symbol8_oiClose, 10)
+
+symbol1_smaAboveOI = symbol1_sma10 > symbol1_oiClose
+symbol1_smaStatus = symbol1_smaAboveOI ? "Down" : "Up"
+symbol2_smaAboveOI = symbol2_sma10 > symbol2_oiClose
+symbol2_smaStatus = symbol2_smaAboveOI ? "Down" : "Up"
+symbol3_smaAboveOI = symbol3_sma10 > symbol3_oiClose
+symbol3_smaStatus = symbol3_smaAboveOI ? "Down" : "Up"
+symbol4_smaAboveOI = symbol4_sma10 > symbol4_oiClose
+symbol4_smaStatus = symbol4_smaAboveOI ? "Down" : "Up"
+symbol5_smaAboveOI = symbol5_sma10 > symbol5_oiClose
+symbol5_smaStatus = symbol5_smaAboveOI ? "Down" : "Up"
+symbol6_smaAboveOI = symbol6_sma10 > symbol6_oiClose
+symbol6_smaStatus = symbol6_smaAboveOI ? "Down" : "Up"
+symbol7_smaAboveOI = symbol7_sma10 > symbol7_oiClose
+symbol7_smaStatus = symbol7_smaAboveOI ? "Down" : "Up"
+symbol8_smaAboveOI = symbol8_sma10 > symbol8_oiClose
+symbol8_smaStatus = symbol8_smaAboveOI ? "Down" : "Up"
+
+var table_id = table.new(position = position.top_right, columns = 2, rows = 9, bgcolor=color.new(color.black, 90))
+table.cell(table_id, 0, 0, "Symbol", bgcolor=color.gray, text_color=color.white)
+table.cell(table_id, 1, 0, "OI", bgcolor=color.gray, text_color=color.white)
+table.cell(table_id, 0, 1, symbol1, text_color=color.yellow)
+table.cell(table_id, 1, 1, symbol1_smaStatus, text_color=symbol1_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 2, symbol2, text_color=color.yellow)
+table.cell(table_id, 1, 2, symbol2_smaStatus, text_color=symbol2_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 3, symbol3, text_color=color.yellow)
+table.cell(table_id, 1, 3, symbol3_smaStatus, text_color=symbol3_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 4, symbol4, text_color=color.yellow)
+table.cell(table_id, 1, 4, symbol4_smaStatus, text_color=symbol4_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 5, symbol5, text_color=color.yellow)
+table.cell(table_id, 1, 5, symbol5_smaStatus, text_color=symbol5_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 6, symbol6, text_color=color.yellow)
+table.cell(table_id, 1, 6, symbol6_smaStatus, text_color=symbol6_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 7, symbol7, text_color=color.yellow)
+table.cell(table_id, 1, 7, symbol7_smaStatus, text_color=symbol7_smaAboveOI ? color.red : color.green)
+table.cell(table_id, 0, 8, symbol8, text_color=color.yellow)
+table.cell(table_id, 1, 8, symbol8_smaStatus, text_color=symbol8_smaAboveOI ? color.red : color.green)
